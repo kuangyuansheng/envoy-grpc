@@ -14,7 +14,6 @@ import (
 	"envoy-grpc/app/health"
 
 	cli "gopkg.in/urfave/cli.v1"
-
 	pbh "google.golang.org/grpc/health/grpc_health_v1"
 )
 

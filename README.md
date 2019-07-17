@@ -1,8 +1,11 @@
 # envoyproxy grpc测试实例
 envoy微服务 服务发现,服务治理demo
 
-### 需要安装
+### 安装
 ```
+#首先要安装golang, 然后设置GOPATH
+git clone github.com/kuangyuansheng/envoy-grpc $GOPATH/src/envoy-grpc
+
 # grpc健康检查
 go get -u google.golang.org/grpc/health
 ```
@@ -29,7 +32,7 @@ make
 # 2019/07/11 10:35:33 checking............Watch
 
 # 运行客户端
-./rpcCli
+./rpcCli -a 127.0.0.1:19000
 ```
 
 

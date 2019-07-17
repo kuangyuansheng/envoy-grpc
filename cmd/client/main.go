@@ -54,7 +54,7 @@ func init(){
 	
 	
 		r, err := f.SayHello(c, &pb.HelloRequest{
-			Name:"aa",
+			Name:"test_name",
 		})
 	
 		if err != nil {
