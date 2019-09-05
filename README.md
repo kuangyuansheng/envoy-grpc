@@ -4,7 +4,7 @@ envoy微服务 服务发现,服务治理demo
 ### 安装
 ```
 #首先要安装golang, 然后设置GOPATH
-git clone github.com/kuangyuansheng/envoy-grpc $GOPATH/src/envoy-grpc
+git clone https://github.com/kuangyuansheng/envoy-grpc $GOPATH/src/envoy-grpc
 
 # grpc健康检查
 go get -u google.golang.org/grpc/health
