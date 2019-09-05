@@ -41,7 +41,7 @@ static_resources:
     - socket_address: { address: 127.0.0.1, port_value: 18000 }
     - socket_address: { address: 127.0.0.1, port_value: 17000 }
     health_checks:
-    - grpc_health_check: {service_name: YourServiceName}
+    - grpc_health_check: {service_name: Watch}
       unhealthy_threshold : 1
       healthy_threshold: 1
       timeout: 0.5s

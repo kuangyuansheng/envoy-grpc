@@ -5,15 +5,16 @@ import (
 	"strconv"
 	"syscall"
 	"fmt"
+	"context"
 	"os/signal"
 	"os"
 	"path/filepath"
 	"google.golang.org/grpc"
-	pb "envoy-grpc/protos"
 	"envoy-grpc/app/handler"
 	"envoy-grpc/app/health"
 
 	cli "gopkg.in/urfave/cli.v1"
+	pb "envoy-grpc/protos"
 	pbh "google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -21,9 +22,7 @@ const (
 	version = "3.0.1"
 	usage   = "envoy proxy test"
 )
-var (
-	app *cli.App
-)
+var app *cli.App
 
 func init(){
 	app 	    = cli.NewApp()
@@ -31,19 +30,20 @@ func init(){
 	app.Version = version
 	app.Usage 	= usage
 
-	// 定义命令行参数
 	app.Flags = []cli.Flag{
 		cli.UintFlag{Name: "port, p", 	Usage: "端口"},
 	}
 
-	// Run执行动作
 	app.Action 	= func(ctx *cli.Context) error {
 		p := ctx.GlobalUint("port")
 		if p == 0 {
 			log.Fatalf("Missing port!")
 		}
 
-		grpcServer := grpc.NewServer()
+		grpcServer := grpc.NewServer(			
+			grpc.StreamInterceptor(StreamServerInterceptor),
+			grpc.UnaryInterceptor(UnaryServerInterceptor),
+		)
 		lis, err := net.Listen("tcp", ":"+strconv.Itoa(int(p)))
 		if err != nil {
 			log.Fatalf("Failed to listen:%+v",err)
@@ -61,20 +61,32 @@ func init(){
 		}()	
 
 		log.Printf("service started")
-		// go func(){
 		if err := grpcServer.Serve(lis); err != nil {
 			log.Fatalf("Failed to serve: %+v", err)
 			return err
 		}
 		return nil
 	}
-
 }
-
 
 func main() {
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+
+func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	// log.Printf("before handling. Info: %+v", info)
+	resp, err := handler(ctx, req)
+	// log.Printf("after handling. resp: %+v", resp)
+	return resp, err
+}
+
+func StreamServerInterceptor(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	// log.Printf("before handling. Info: %+v", info)
+	err := handler(srv, ss)
+	// log.Printf("after handling. err: %v", err)
+	return err
 }

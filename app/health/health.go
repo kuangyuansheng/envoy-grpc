@@ -6,14 +6,12 @@ import(
 	pb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
-
 type Health struct{}
 
 func New() *Health {
 	return &Health{}
 }
-
-func (h *Health) Check(ctx context.Context, in *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error){
+func (h *Health) Check(ctx context.Context, in *pb.HealthCheckRequest)(*pb.HealthCheckResponse, error){
 	log.Printf("checking............%s", in.Service)
 	var s pb.HealthCheckResponse_ServingStatus = 1
 	return &pb.HealthCheckResponse{
@@ -21,7 +19,7 @@ func (h *Health) Check(ctx context.Context, in *pb.HealthCheckRequest) (*pb.Heal
 	}, nil
 }
 
-func (h *Health) Watch(in *pb.HealthCheckRequest, w pb.Health_WatchServer) (error){
+func (h *Health) Watch(in *pb.HealthCheckRequest, w pb.Health_WatchServer)(error){
 	log.Printf("watching............%s", in.Service)
 	var s pb.HealthCheckResponse_ServingStatus = 1
 	r := &pb.HealthCheckResponse{
